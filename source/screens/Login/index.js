@@ -1,30 +1,25 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import LoginComponent from '../../components/Login';
+import loginUser from '../../context/actions/auth/loginUser';
+import {GlobalContext} from '../../context/Provider';
 
 const Login = () => {
   // const [value, onChangeText] = React.useState("");
   const [form, setForm] = useState({});
   const [errors, setErrors] = useState({});
 
+  const {
+    authDispatch,
+    authState: {error, loading},
+  } = useContext(GlobalContext);
+
   const onChange = ({name, value}) => {
     setForm({...form, [name]: value});
 
     if (value !== '') {
-      if (name === 'password') {
-        if (value.length < 6) {
-          setErrors(prev => {
-            return {...prev, [name]: 'Please enter minimun 6 character'};
-          });
-        } else {
-          setErrors(prev => {
-            return {...prev, [name]: null};
-          });
-        }
-      } else {
-        setErrors(prev => {
-          return {...prev, [name]: null};
-        });
-      }
+      setErrors(prev => {
+        return {...prev, [name]: null};
+      });
     } else {
       setErrors(prev => {
         return {...prev, [name]: 'This field is require'};
@@ -33,7 +28,11 @@ const Login = () => {
   };
   const onSubmit = () => {
     // validation
-    console.log('Form:>>', form);
+    // console.log('Form:>>', form);
+    if (form.userName && form.password) {
+      console.log("Submitting");
+      loginUser(form)(authDispatch);
+    }
 
     if (!form.userName) {
       setErrors(prev => {
@@ -52,6 +51,8 @@ const Login = () => {
       onChange={onChange}
       form={form}
       errors={errors}
+      error={error}
+      loading={loading}
     />
   );
 };

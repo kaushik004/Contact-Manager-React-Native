@@ -1,11 +1,35 @@
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect, useCallback} from 'react';
 import RegisterComponet from '../../components/SignUp';
-import envs from '../../config/env';
+import register, {clearAuthState} from '../../context/actions/auth/register';
+import axios from '../../helpers/axiosInterceptor';
+import {GlobalContext} from '../../context/Provider';
+import { LOGIN } from '../../constants/routesName';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 const SignUp = () => {
   const [form, setForm] = useState({});
   const [errors, setErrors] = useState({});
-  const {BACKEND_URL} = envs;
+  const {navigate} = useNavigation();
+  const {
+    authDispatch,
+    authState: {error, loading, data},
+  } = useContext(GlobalContext);
+
+  useEffect(() => {
+    if(data) {
+      navigate(LOGIN);
+    }
+  }, [data]);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if(data || error) {
+          clearAuthState()(authDispatch);
+        }
+      };
+    }, [data, error]),
+  );
 
   const onChange = ({name, value}) => {
     setForm({...form, [name]: value});
@@ -35,7 +59,7 @@ const SignUp = () => {
 
   const onSubmit = () => {
     // validation
-    console.log('Form:>>', form);
+    // console.log('Form:>>', form);
     if (!form.firstName) {
       setErrors(prev => {
         return {...prev, firstName: 'Please enter a first name'};
@@ -61,6 +85,14 @@ const SignUp = () => {
         return {...prev, password: 'Please enter a password'};
       });
     }
+
+    if (
+      Object.values(form).length === 5 &&
+      Object.values(form).every(item => item.trim().length > 0) &&
+      Object.values(errors).every(item => !item)
+    ) {
+      register(form)(authDispatch);
+    }
   };
 
   return (
@@ -69,6 +101,8 @@ const SignUp = () => {
       onChange={onChange}
       form={form}
       errors={errors}
+      error={error}
+      loading={loading}
     />
   );
 };
