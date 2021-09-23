@@ -10,6 +10,7 @@ import {
 import Container from '../../components/common/Container';
 import {SETTINGS} from '../../constants/routesName';
 import logoutUser from '../../context/actions/auth/logoutUser';
+import Icon from '../../components/common/Icon';
 import styles from './styles';
 
 const SideMenu = ({navigation, authDispatch}) => {
@@ -33,14 +34,14 @@ const SideMenu = ({navigation, authDispatch}) => {
 
   const menuItems = [
     {
-      icon: <Text>S</Text>,
+      icon: <Icon type='material' name='settings' size={17} />,
       name: 'Settings',
       onPress: () => {
         navigation.navigate(SETTINGS);
       },
     },
     {
-      icon: <Text>L</Text>,
+      icon: <Icon type='material' name='logout' size={17} />,
       name: 'Logout',
       onPress: handleLogout,
     },

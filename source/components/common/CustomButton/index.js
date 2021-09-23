@@ -1,7 +1,13 @@
-import React from 'react'
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
+import React from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import colors from '../../../assets/theme/colors';
-import styles from './styles'
+import styles from './styles';
 
 const CustomButton = ({
   title,
@@ -12,9 +18,8 @@ const CustomButton = ({
   loading,
   onPress,
 }) => {
-  
   const getBgColor = () => {
-    if(disabled) {
+    if (disabled) {
       return colors.grey;
     }
     if (primary) {
@@ -22,7 +27,7 @@ const CustomButton = ({
     }
     if (secondary) {
       return colors.secondary;
-    } 
+    }
     if (danger) {
       return colors.danger;
     }
@@ -34,10 +39,18 @@ const CustomButton = ({
       disabled={disabled}
       style={[styles.wrapper, {backgroundColor: getBgColor()}]}>
       <View style={styles.loaderSection}>
-        {loading && <ActivityIndicator color={primary ? colors.secondary : colors.primary} /> }
+        {loading && (
+          <ActivityIndicator
+            color={primary ? colors.secondary : colors.primary}
+          />
+        )}
         {title && (
-          <Text style={{color: disabled ? 'black' : colors.white, paddingLeft: loading ? 5 : 0}}>
-            {title}
+          <Text
+            style={{
+              color: disabled ? 'black' : colors.white,
+              paddingLeft: loading ? 5 : 0,
+            }}>
+            {loading ? 'Pleasse Wait...' :title}
           </Text>
         )}
       </View>

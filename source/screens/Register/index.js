@@ -1,25 +1,19 @@
 import React, {useState, useContext, useEffect, useCallback} from 'react';
 import RegisterComponet from '../../components/SignUp';
 import register, {clearAuthState} from '../../context/actions/auth/register';
-import axios from '../../helpers/axiosInterceptor';
 import {GlobalContext} from '../../context/Provider';
 import { LOGIN } from '../../constants/routesName';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 const SignUp = () => {
+  const {navigate} = useNavigation();
+
   const [form, setForm] = useState({});
   const [errors, setErrors] = useState({});
-  const {navigate} = useNavigation();
   const {
     authDispatch,
     authState: {error, loading, data},
   } = useContext(GlobalContext);
-
-  useEffect(() => {
-    if(data) {
-      navigate(LOGIN);
-    }
-  }, [data]);
 
   useFocusEffect(
     useCallback(() => {
@@ -91,7 +85,9 @@ const SignUp = () => {
       Object.values(form).every(item => item.trim().length > 0) &&
       Object.values(errors).every(item => !item)
     ) {
-      register(form)(authDispatch);
+      register(form)(authDispatch)((response) => {
+        navigate(LOGIN, {data: response});
+      });
     }
   };
 

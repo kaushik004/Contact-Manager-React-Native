@@ -8,7 +8,15 @@ import {useNavigation} from '@react-navigation/native';
 import {REGISTER} from '../../constants/routesName';
 import Message from '../common/Message';
 
-const LoginComponent = ({onSubmit, onChange, loading, form, errors, error}) => {
+const LoginComponent = ({
+  onSubmit,
+  onChange,
+  justSignedUp,
+  loading,
+  form,
+  errors,
+  error,
+}) => {
   const {navigate} = useNavigation();
   const [isSecureEntry, setIsSecureEntry] = useState(true);
   return (
@@ -22,6 +30,13 @@ const LoginComponent = ({onSubmit, onChange, loading, form, errors, error}) => {
         <Text style={styles.subTitle}>Please login here</Text>
 
         <View style={styles.form}>
+          {justSignedUp && (
+            <Message
+              onDismiss={() => {}}
+              success
+              message="Account Created Successfully"
+            />
+          )}
           {error && !error.error && (
             <Message
               onDismiss={() => {}}
@@ -35,6 +50,7 @@ const LoginComponent = ({onSubmit, onChange, loading, form, errors, error}) => {
             label="Username"
             placeholder="Enter Username"
             placeholderTextColor="grey"
+            value={form.userName || null}
             iconPosition="right"
             onChangeText={value => {
               onChange({name: 'userName', value});

@@ -1,10 +1,27 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useEffect} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
-import Container from '../../components/common/Container';
+import React, {useContext, useEffect, useState} from 'react';
+import {TouchableOpacity} from 'react-native';
+import Icon from '../../components/common/Icon';
+import ContectsComponent from '../../components/ContactsComponents';
+import getContacts from '../../context/actions/contacts/getContacts';
+import {GlobalContext} from '../../context/Provider';
 
 const Contacts = () => {
   const {setOptions, toggleDrawer} = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const {
+    contactDispatch,
+    contactState: {
+      getContacts: {data, loading}
+    },
+  } = useContext(GlobalContext);
+  
+
+  useEffect(() => {
+    getContacts()(contactDispatch)
+  }, []);
+
   useEffect(() => {
     setOptions({
       headerLeft: () => (
@@ -12,15 +29,18 @@ const Contacts = () => {
           onPress={() => {
             toggleDrawer();
           }}>
-          <Text style={{padding: 10}}>Nav</Text>
+          <Icon type="material" size={25} name="menu" style={{padding: 10}} />
         </TouchableOpacity>
       ),
     });
   });
   return (
-    <Container>
-      <Text>Hi from Contacts</Text>
-    </Container>
+    <ContectsComponent
+      data={data}
+      loading={loading}
+      modalVisible={modalVisible}
+      setModalVisible={setModalVisible}
+    />
   );
 };
 
